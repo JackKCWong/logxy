@@ -24,7 +24,7 @@ type SingleHostProxy struct {
 // ServeHTTP implements http.Handler.
 func (h *SingleHostProxy) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if req.Method == http.MethodConnect {
-		w.WriteHeader(200)
+		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -106,7 +106,7 @@ func (h *SingleHostProxy) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		Dur("body_read_ms", reqTracker.Duration())
 
 	if err != nil {
-		w.WriteHeader(500)
+		w.WriteHeader(http.StatusBadGateway)
 		w.Write([]byte(err.Error()))
 		logevt.Err(err)
 		return
