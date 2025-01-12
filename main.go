@@ -34,6 +34,11 @@ var cmd = &cobra.Command{
 			Addr: ":" + strconv.Itoa(int(port)),
 			Handler: &internal.SingleHostProxy{
 				Target: targetURL,
+				Client: &http.Client{
+					CheckRedirect: func(req *http.Request, via []*http.Request) error {
+						return http.ErrUseLastResponse
+					},
+				},
 			}}
 
 		go func() {

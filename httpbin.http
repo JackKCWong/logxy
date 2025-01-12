@@ -1,8 +1,19 @@
 GET http://localhost:8080/anything
 
 
+###
+GET http://localhost:8080/bytes/1024
+
+###
+GET http://localhost:8080/stream-bytes/10240
 
 ###
 POST http://localhost:8080/anything
 
 helloworld
+
+###
+GET http://localhost:8080/image/svg
+
+###
+GET http://localhost:8080/redirect-to?url=https://baidu.com
