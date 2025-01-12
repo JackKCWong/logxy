@@ -25,6 +25,8 @@ var cmd = &cobra.Command{
 			log.Fatal().Str("target", target).Msg("empty target url")
 		}
 
+		sslPEM, _ := cmd.Flags().GetString("ssl")
+
 		targetURL, err := url.Parse(target)
 		if err != nil {
 			log.Fatal().Str("target", target).Err(err).Msg("")
@@ -39,12 +41,19 @@ var cmd = &cobra.Command{
 						return http.ErrUseLastResponse
 					},
 				},
-			}}
+			},
+		}
 
 		go func() {
 			log.Info().Int16("port", port).Msg("starting server")
-			if err := server.ListenAndServe(); err != nil {
-				log.Info().Msg(err.Error())
+			if sslPEM == "" {
+				if err := server.ListenAndServe(); err != nil {
+					log.Info().Msg(err.Error())
+				}
+			} else {
+				if err := server.ListenAndServeTLS(sslPEM, sslPEM); err != nil {
+					log.Info().Msg(err.Error())
+				}
 			}
 		}()
 
@@ -66,6 +75,7 @@ var cmd = &cobra.Command{
 func init() {
 	cmd.Flags().Int16P("port", "p", 8080, "port to listen on")
 	cmd.Flags().StringP("target", "t", "", "target url to proxy to")
+	cmd.Flags().StringP("ssl", "", "", "start as https server using the specified pem file that contains both the cert and key")
 }
 
 func main() {

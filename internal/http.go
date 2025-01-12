@@ -23,6 +23,11 @@ type SingleHostProxy struct {
 
 // ServeHTTP implements http.Handler.
 func (h *SingleHostProxy) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	if req.Method == http.MethodConnect {
+		w.WriteHeader(200)
+		return
+	}
+
 	start := time.Now()
 	reqMetrics := zerolog.Dict()
 	reqMetrics.Time("arrived_at", start)
