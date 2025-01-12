@@ -112,6 +112,7 @@ func (h *SingleHostProxy) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	defer resp.Body.Close()
 	respTracker := &ReaderTracker{Reader: resp.Body}
 	for k, v := range resp.Header {
 		for _, vv := range v {
